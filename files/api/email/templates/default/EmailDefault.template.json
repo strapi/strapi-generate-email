@@ -1,0 +1,13 @@
+{
+  "default": {
+    "attributes": {
+      "from": {},
+      "to": {},
+      "subject": {},
+      "html": {},
+      "text": {},
+      "sent": {}
+    },
+    "displayedAttribute": "from"
+  }
+}
