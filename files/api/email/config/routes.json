@@ -1,0 +1,11 @@
+{
+  "routes": {
+    "POST /email": {
+      "controller": "Email",
+      "action": "send",
+      "policies": [
+        "isAuthorized"
+      ]
+    }
+  }
+}
