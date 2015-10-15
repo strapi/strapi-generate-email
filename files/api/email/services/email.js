@@ -30,14 +30,19 @@ module.exports = {
 
     try {
 
+      // Format transport config.
+      let transportConfig;
+      if (strapi.config.smtp && strapi.config.smtp.service && strapi.config.smtp.service.name) {
+        transportConfig = {};
+        _.forEach(strapi.config.smtp.service, function (value, key) {
+          if (value) {
+            transportConfig[key] = value;
+          }
+        });
+      }
+
       // Init the transporter.
-      const transporter = nodemailer.createTransport({
-        service: strapi.config.smtp.service && strapi.config.smtp.service.name,
-        auth: {
-          user: strapi.config.smtp.service && strapi.config.smtp.service.user,
-          pass: strapi.config.smtp.service && strapi.config.smtp.service.pass
-        }
-      });
+      const transporter = nodemailer.createTransport(transportConfig);
 
       // Init `variable` email.
       let email;
