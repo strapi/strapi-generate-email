@@ -8,7 +8,7 @@ module.exports = {
 
   send: function * () {
     try {
-      let email = yield strapi.api.email.services.email.send(this.request.body);
+      const email = yield strapi.api.email.services.email.send(this.request.body);
       this.body = email;
     } catch (err) {
       strapi.log.error();

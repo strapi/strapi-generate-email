@@ -45,6 +45,7 @@
       "consistent-this": 0,
       "dot-notation": 0,
       "global-require": 0,
+      "handle-callback-err": 0,
       "max-nested-callbacks": [
         1,
         6
@@ -54,6 +55,7 @@
       "no-implicit-coercion": 0,
       "no-invalid-this": 0,
       "no-throw-literal": 0,
+      "no-undef": 0,
       "no-unused-expressions": 0,
       "padded-blocks": 0,
       "prefer-arrow-callback": 0,
