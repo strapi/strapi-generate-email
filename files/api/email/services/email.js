@@ -32,9 +32,9 @@ module.exports = {
 
       // Format transport config.
       let transportConfig;
-      if (strapi.config.smtp && strapi.config.smtp.service && strapi.config.smtp.service.name) {
+      if (strapi.api.email.config.smtp && strapi.api.email.config.smtp.service && strapi.api.email.config.smtp.service.name) {
         transportConfig = {};
-        _.forEach(strapi.config.smtp.service, function (value, key) {
+        _.forEach(strapi.api.email.config.smtp.service, function (value, key) {
           if (value) {
             transportConfig[key] = value;
           }
@@ -52,7 +52,7 @@ module.exports = {
 
       // Default values.
       options = _.isObject(options) ? options : {};
-      options.from = strapi.config.smtp.from || '';
+      options.from = strapi.api.email.config.smtp.from || '';
       options.text = options.text || options.html;
       options.html = options.html || options.text;
 
