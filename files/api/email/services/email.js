@@ -33,12 +33,13 @@ module.exports = {
       // Format transport config.
       let transportConfig;
       if (strapi.api.email.config.smtp && strapi.api.email.config.smtp.service && strapi.api.email.config.smtp.service.name) {
-        transportConfig = {};
-        _.forEach(strapi.api.email.config.smtp.service, function (value, key) {
-          if (value) {
-            transportConfig[key] = value;
+        transportConfig = {
+          service: strapi.api.email.config.smtp.service.name,
+          auth: {
+            user: strapi.api.email.config.smtp.service.user,
+            pass: strapi.api.email.config.smtp.service.pass
           }
-        });
+        };
       }
 
       // Init the transporter.
