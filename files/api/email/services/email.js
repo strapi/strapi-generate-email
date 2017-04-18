@@ -24,70 +24,66 @@ module.exports = {
    */
 
   send: function * (options, cb) {
+    return new Promise(function *(resolve, reject) {
+      try {
 
-    // Init the Promise.
-    const deferred = Promise.defer();
-
-    try {
-
-      // Format transport config.
-      let transportConfig;
-      if (strapi.api.email.config.smtp && strapi.api.email.config.smtp.service && strapi.api.email.config.smtp.service.name) {
-        transportConfig = {
-          service: strapi.api.email.config.smtp.service.name,
-          auth: {
-            user: strapi.api.email.config.smtp.service.user,
-            pass: strapi.api.email.config.smtp.service.pass
-          }
-        };
-      }
-
-      // Init the transporter.
-      const transporter = nodemailer.createTransport(transportConfig);
-
-      // Init `variable` email.
-      let email;
-
-      // Check the callback type.
-      cb = _.isFunction(cb) ? cb : _.noop;
-
-      // Default values.
-      options = _.isObject(options) ? options : {};
-      options.from = strapi.api.email.config.smtp.from || '';
-      options.text = options.text || options.html;
-      options.html = options.html || options.text;
-
-      // Register the `email` object in the database.
-      email = yield Email.create(_.assign({
-        sent: false
-      }, options));
-
-      // Send the email.
-      transporter.sendMail({
-        from: options.from,
-        to: options.to,
-        subject: options.subject,
-        text: options.text,
-        html: options.html
-      }, function (err) {
-        if (err) {
-          cb(err);
-          deferred.reject(err);
-        } else {
-          Email.update(email.id, {
-            sent: true
-          }).exec(function (err, emailUpdated) {
-            email = emailUpdated[0] || email;
-            cb(null, email);
-            deferred.resolve(email);
-          });
+        // Format transport config.
+        let transportConfig;
+        if (strapi.api.email.config.smtp && strapi.api.email.config.smtp.service && strapi.api.email.config.smtp.service.name) {
+          transportConfig = {
+            service: strapi.api.email.config.smtp.service.name,
+            auth: {
+              user: strapi.api.email.config.smtp.service.user,
+              pass: strapi.api.email.config.smtp.service.pass
+            }
+          };
         }
-      });
 
-    } catch (err) {
-      deferred.reject(err);
-    }
+        // Init the transporter.
+        const transporter = nodemailer.createTransport(transportConfig);
 
-    return deferred.promise;
+        // Init `variable` email.
+        let email;
+
+        // Check the callback type.
+        cb = _.isFunction(cb) ? cb : _.noop;
+
+        // Default values.
+        options = _.isObject(options) ? options : {};
+        options.from = strapi.api.email.config.smtp.from || '';
+        options.text = options.text || options.html;
+        options.html = options.html || options.text;
+
+        // Register the `email` object in the database.
+        email = yield Email.create(_.assign({
+          sent: false
+        }, options));
+
+        // Send the email.
+        transporter.sendMail({
+          from: options.from,
+          to: options.to,
+          subject: options.subject,
+          text: options.text,
+          html: options.html
+        }, function (err) {
+          if (err) {
+            cb(err);
+            reject(err);
+          } else {
+            Email.update(email.id, {
+              sent: true
+            }).exec(function (err, emailUpdated) {
+              email = emailUpdated[0] || email;
+              cb(null, email);
+              resolve(email);
+            });
+          }
+        });
+
+      } catch (err) {
+        reject(err);
+      }
+    });
   }
 };
